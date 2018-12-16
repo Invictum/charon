@@ -1,0 +1,4 @@
+name: Charon
+version: 1.0
+description: Server side plugin that counts players death and kills. Saves results to CSV file for future use
+main: com.github.invictum.Charon
