@@ -1,7 +1,7 @@
 Charon
 ======
 
-Charon is a Minecraft server side plugin that provides ability to track players PVP statistics and save it to a file in CSV format.
+Charon is a Minecraft server side plugin that provides ability to track players PvP, PvE and EXP statistics with saving it to a file in CSV format.
 
 Installation
 ------------
@@ -12,7 +12,7 @@ Configuration
 -------------
 On first run plugin will create a default configuration file at `SERVER_ROOT_DIRECTORY/plugins/Charon/config.yml`
 
-There is only one option available for configuration
+Two configuration options are available
 ```
 # Path to file to dump data
 path: charon-data.csv
@@ -22,26 +22,50 @@ It defines a path to a file where PVP data should be recorded. Path is relative 
 But it is possible to provide full absolute path, e. g. `/opt/data/pvp.csv`
 
 Make sure specified path is writable for a user that runs a Minecraft server.
-There is no need to create file manually - it will be created on first attempt to log a PVP event.
+There is no need to create file manually - it will be created on server startup. If file already exists it won't be override.
+
+```
+# List of event types that should be logged. Possible values are: PVP, DEATH and EXP
+# At least one type must be specified
+events:
+  - "PVP"
+  - "DEATH"
+  - "EXP"
+```
+
+Make sure at least one event type is specified otherwise nothing will be recorded
 
 Data format
 -----------
-Charon records each player's dead and kill events in a CSV format with `,` symbol separator.
-Each line represents one PVP event, two record variants are possible.
+Charon records each event as a separate row in a CSV format with `,` symbol separator.
+Depends on event type several record variants are possible.
+
+*DEATH*
 ```
-1544911787779,freeman
+1544911787779,DEATH,freeman
 ```
 Record that describes an event of user's death.
-Where `1544911787779` is a timestamp in UNIX format and `freeman` is a nickname of player who dead.
+Where `1544911787779` is a timestamp in UNIX format, `DEATH` is an event type and `freeman` is a nickname of player who dead.
+
+*PVP*
 ```
-1544925934804,potato,freeman
+1544925934804,PVP,potato,freeman
 ```
 Record that describes an event of user's kill.
-Where `1544925934804` is a timestamp in UNIX format, `potato` is a nickname of player who dead, `freeman` is a nickname of killer player.
+Where `1544925934804` is a timestamp in UNIX format, `PVP` event qualifier, `potato` is a nickname of victim, `freeman` is a nickname of killer player.
 
-Charon unable to detect "accident kills". For example if one player push another into the lava this will be recorded as usual dead event without a killer.
+Charon unable to detect "accident kills". For example if one player push another into the lava this will be recorded as usual `DEATH` event without a killer.
 
 Charon takes into account only the last hit, so if several players attack another the one who made a last hit will be recorded as a killer.
+
+*EXP*
+```
+1559602076793,EXP,Knight,3
+```
+Record that describes an event of user gaining some experience.
+Where `1559602076793` is a timestamp in UNIX format, `EXP` event qualifier, `Knight` is a nickname of player who exp, `3` is an amount of experience gained.
+
+To get experience player should collect exp bubble in a game. 
 
 Build plugin manually
 ---------------------
