@@ -1,2 +1,8 @@
-# Path to file to dump data
+# Path to file to dump data. Option mustn't be empty
 path: "charon-data.csv"
+# List of event types that should be logged. Possible values are: PVP, DEATH and EXP
+# At least one type must be specified
+events:
+  - "PVP"
+  - "DEATH"
+  - "EXP"
